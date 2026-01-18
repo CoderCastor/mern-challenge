@@ -13,36 +13,45 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
+model user {
   id       String @id @default(uuid())
   name     String
   email    String @unique
   address  String
   password String
 
-  role     role
+  role    role     @default(NORMAL)
   ratings rating[]
+  store   store?
 }
 
-model Shop {
-  id      String @id @default(uuid())
-  name    String
-  address String
+model store {
+  id                 String @id @default(uuid())
+  name               String
+  email              String @unique
+  address            String
+  total_rating_count Int    @default(0)
+  avg_rating         Float    @default(0)
 
-  ratings rating[]
+  ratings        rating[]
+  store_owner_id String?  @unique
+  store_owner    user?    @relation(fields: [store_owner_id], references: [id])
 }
 
 model rating {
-  id     String @id @default(uuid())
-  userId String
-  shopId String
+  id      String @id @default(uuid())
+  userId  String
+  storeId String
+  rating  Int
 
-  user User @relation(fields: [userId], references: [id])
-  shop Shop @relation(fields: [shopId], references: [id])
+  user  user  @relation(fields: [userId], references: [id])
+  store store @relation(fields: [storeId], references: [id])
+
+  @@unique([storeId, userId])
 }
 
 enum role {
   ADMIN
-  USER
+  NORMAL
   STORE_OWNER
 }

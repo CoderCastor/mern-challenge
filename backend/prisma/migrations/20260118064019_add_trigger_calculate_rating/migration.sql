@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "store" ALTER COLUMN "avg_rating" SET DEFAULT 0,
+ALTER COLUMN "avg_rating" SET DATA TYPE DOUBLE PRECISION;
